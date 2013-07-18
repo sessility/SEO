@@ -1,0 +1,10 @@
+sudo apt-get update
+sudo apt-get --force-yes --yes upgrade
+sudo apt-get --force-yes --yes install wordpress mysql-server
+
+sudo bash /usr/share/doc/wordpress/examples/setup-mysql -n wordpress sessility
+sudo ln -s /usr/share/wordpress /var/www/sessilty
+
+DBDUMP=`pwd`/sessility-wordpress-database.sql
+
+mysql -uroot -p wordpress < $DBDUMP

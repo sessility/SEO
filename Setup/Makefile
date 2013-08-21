@@ -66,6 +66,7 @@ wordpress: remove-wpconfig remove-symlink
 
 install-plugin:
 	sudo ln -s $(PLUGINPATH) $(PLUGINDEST)
+	$(CMD) sudo chown -R root:www-data /usr/share/wordpress/wp-content/plugins/sessility-seo
 
 foo:
 	sudo lxc-attach -n sessility -- echo $(CONTAINERADDR)

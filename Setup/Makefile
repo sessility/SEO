@@ -2,7 +2,7 @@ SHELL 			:= /bin/bash
 CMD				:= sudo lxc-attach -n sessility --
 
 CONTAINERADDR	= $$($(CMD) /sbin/ifconfig|grep inet|head -1|sed 's/\:/ /'|awk '{print $$3}')
-CONTAINERDEPS 	:= wordpress mysql-server
+CONTAINERDEPS 	:= wordpress mysql-server inotify-tools
 WPCONFIG 		:= /etc/wordpress/config-$(CONTAINERADDR).php
 DBUSER 			= $$(sudo lxc-attach -n sessility -- sudo cat $(WPCONFIG) |egrep "DB_USER'" | egrep -o ",\ .+'\)"|sed "s/, '//"|sed "s/')//")
 DBPASS 			= $$(sudo lxc-attach -n sessility -- sudo cat $(WPCONFIG) |egrep "DB_PASSWORD'" | egrep -o ",\ .+'\)"|sed "s/, '//"|sed "s/')//")
@@ -64,8 +64,16 @@ wordpress: remove-wpconfig remove-symlink
 	echo "Allright, go to http://$(CONTAINERADDR)/wp-admin/install.php to set up wordpress"
 	echo "To install plugin, do make install-plugin. You'll have to activate the plugin yourself through the admin interface"
 
+remove-plugin:
+	$(CMD) umount /usr/share/wordpress/wp-content/plugins/sessility-seo
+	$(CMD) rm -rf /usr/share/wordpress/wp-content/plugins/sessility-seo
+
+
 install-plugin:
-	sudo ln -s $(PLUGINPATH) $(PLUGINDEST)
+	#sudo ln -s $(PLUGINPATH) $(PLUGINDEST)
+	#$(CMD) sudo chown -R root:www-data /usr/share/wordpress/wp-content/plugins/sessility-seo
+	-$(CMD) sudo mkdir /usr/share/wordpress/wp-content/plugins/sessility-seo
+	$(CMD) mount --bind `pwd`/../Plugin/SEO/ /usr/share/wordpress/wp-content/plugins/sessility-seo/
 	$(CMD) sudo chown -R root:www-data /usr/share/wordpress/wp-content/plugins/sessility-seo
 
 foo:

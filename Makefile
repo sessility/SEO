@@ -2,12 +2,13 @@ SHELL 			:= /bin/bash
 CMD				:= sudo lxc-attach -n sessility --
 
 CONTAINERADDR	= $$($(CMD) /sbin/ifconfig|grep inet|head -1|sed 's/\:/ /'|awk '{print $$3}')
-CONTAINERDEPS 	:= wordpress mysql-server inotify-tools
+CONTAINERDEPS 	:= wordpress mysql-server
 WPCONFIG 		:= /etc/wordpress/config-$(CONTAINERADDR).php
 DBUSER 			= $$(sudo lxc-attach -n sessility -- sudo cat $(WPCONFIG) |egrep "DB_USER'" | egrep -o ",\ .+'\)"|sed "s/, '//"|sed "s/')//")
 DBPASS 			= $$(sudo lxc-attach -n sessility -- sudo cat $(WPCONFIG) |egrep "DB_PASSWORD'" | egrep -o ",\ .+'\)"|sed "s/, '//"|sed "s/')//")
-PLUGINPATH 		= `pwd`/../Plugin/SEO
-PLUGINDEST 		= /var/lib/lxc/sessility/rootfs/usr/share/wordpress/wp-content/plugins/sessility-seo
+PLUGINPATH 		= `pwd`/Plugin/SEO
+HOSTPLUGINDEST	= /var/lib/lxc/sessility/rootfs/usr/share/wordpress/wp-content/plugins/sessility-seo
+PLUGINDEST		= /usr/share/wordpress/wp-content/plugins/sessility-seo
 
 bootstrap: hostdeps create start containerupdate containerupgrade containerdeps wordpress
 
@@ -34,14 +35,10 @@ clean: stop destroy
 
 remove-wpconfig:
 	-sudo rm $(WPCONFIG)
-remove-symlink:
-	-$(CMD) sudo rm /var/www/sessility
 
 wordpress: remove-wpconfig remove-symlink
-	echo "\nSetting up wordpress on sessility container"
-	-$(CMD) sudo bash /usr/share/doc/wordpress/examples/setup-mysql -n wordpress $(CONTAINERADDR)
 
-	$(CMD) sudo ln -s /usr/share/wordpress /var/www/sessility
+	-$(CMD) sudo bash /usr/share/doc/wordpress/examples/setup-mysql -n wordpress $(CONTAINERADDR)
 
 	# create vhost config
 	$(CMD) sudo touch /etc/apache2/sites-available/sessility
@@ -65,16 +62,14 @@ wordpress: remove-wpconfig remove-symlink
 	echo "To install plugin, do make install-plugin. You'll have to activate the plugin yourself through the admin interface"
 
 remove-plugin:
-	$(CMD) umount /usr/share/wordpress/wp-content/plugins/sessility-seo
-	$(CMD) rm -rf /usr/share/wordpress/wp-content/plugins/sessility-seo
+	$(CMD) umount $(PLUGINDEST)
+	$(CMD) rm -rf $(PLUGINDEST)
 
 
 install-plugin:
-	#sudo ln -s $(PLUGINPATH) $(PLUGINDEST)
-	#$(CMD) sudo chown -R root:www-data /usr/share/wordpress/wp-content/plugins/sessility-seo
-	-$(CMD) sudo mkdir /usr/share/wordpress/wp-content/plugins/sessility-seo
-	$(CMD) mount --bind `pwd`/../Plugin/SEO/ /usr/share/wordpress/wp-content/plugins/sessility-seo/
-	$(CMD) sudo chown -R root:www-data /usr/share/wordpress/wp-content/plugins/sessility-seo
+	-$(CMD) sudo mkdir $(PLUGINDEST)
+	$(CMD) mount --bind $(PLUGINPATH) $(PLUGINDEST)/
+	$(CMD) sudo chown -R root:www-data $(PLUGINDEST)
 
-foo:
+print-container-ip:
 	sudo lxc-attach -n sessility -- echo $(CONTAINERADDR)

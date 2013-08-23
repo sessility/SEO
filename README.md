@@ -9,3 +9,8 @@ Features
 +   **Sitemaps**: Always up-to-date auto-generated sitemap
 +   **URL Caretaker**: Canonical URLs
 +   **Opengraph**: Adds meta-data to your content
+
+Installing
+---------------------
++ $ make bootstrap install-plugin
+

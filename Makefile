@@ -3,6 +3,7 @@ CMD				:= sudo lxc-attach -n sessility --
 
 CONTAINERADDR	= $$($(CMD) /sbin/ifconfig|grep inet|head -1|sed 's/\:/ /'|awk '{print $$3}')
 CONTAINERDEPS 	:= wordpress mysql-server
+HOSTDEPS 		:= phpunit
 WPCONFIG 		:= /etc/wordpress/config-$(CONTAINERADDR).php
 DBUSER 			= $$(sudo lxc-attach -n sessility -- sudo cat $(WPCONFIG) |egrep "DB_USER'" | egrep -o ",\ .+'\)"|sed "s/, '//"|sed "s/')//")
 DBPASS 			= $$(sudo lxc-attach -n sessility -- sudo cat $(WPCONFIG) |egrep "DB_PASSWORD'" | egrep -o ",\ .+'\)"|sed "s/, '//"|sed "s/')//")
@@ -30,13 +31,13 @@ containerupgrade:
 containerdeps:
 	$(CMD) sudo apt-get --force-yes --yes install $(CONTAINERDEPS)
 
-clean-running-container: remove-wpconfig remove-symlink
+clean-running-container: remove-wpconfig
 clean: stop destroy
 
 remove-wpconfig:
 	-sudo rm $(WPCONFIG)
 
-wordpress: remove-wpconfig remove-symlink
+wordpress: remove-wpconfig
 
 	-$(CMD) sudo bash /usr/share/doc/wordpress/examples/setup-mysql -n wordpress $(CONTAINERADDR)
 
@@ -73,3 +74,14 @@ install-plugin:
 
 print-container-ip:
 	sudo lxc-attach -n sessility -- echo $(CONTAINERADDR)
+
+print-container-install-url:
+	echo "http://"`sudo lxc-attach -n sessility -- echo $(CONTAINERADDR)`"/wp-admin/install.php"
+
+print-container-url:
+	echo "http://"`sudo lxc-attach -n sessility -- echo $(CONTAINERADDR)`"/"
+
+test:
+	./test
+
+.PHONY: test clean

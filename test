@@ -1,0 +1,2 @@
+#!/bin/bash
+phpunit --verbose --colors --verbose --process-isolation Plugin/tests/*

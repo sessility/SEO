@@ -2,8 +2,8 @@ SHELL 			:= /bin/bash
 CMD				:= sudo lxc-attach -n sessility --
 
 CONTAINERADDR	= $$($(CMD) /sbin/ifconfig|grep inet|head -1|sed 's/\:/ /'|awk '{print $$3}')
-CONTAINERDEPS 	:= wordpress mysql-server
-HOSTDEPS 		:= phpunit
+CONTAINERDEPS 	:= wordpress mysql-server phpunit
+#HOSTDEPS 		:=
 WPCONFIG 		:= /etc/wordpress/config-$(CONTAINERADDR).php
 DBUSER 			= $$(sudo lxc-attach -n sessility -- sudo cat $(WPCONFIG) |egrep "DB_USER'" | egrep -o ",\ .+'\)"|sed "s/, '//"|sed "s/')//")
 DBPASS 			= $$(sudo lxc-attach -n sessility -- sudo cat $(WPCONFIG) |egrep "DB_PASSWORD'" | egrep -o ",\ .+'\)"|sed "s/, '//"|sed "s/')//")
@@ -16,7 +16,7 @@ bootstrap: hostdeps create start containerupdate containerupgrade containerdeps 
 hostdeps:
 	sudo apt-get --force-yes --yes install lxc
 create:
-	sudo lxc-create -n sessility -t ubuntu -- -r precise -a i386 -b $$USER
+	sudo lxc-create -n sessility -t ubuntu -- -r quantal -a i386 -b $$USER
 start:
 	sudo lxc-start -dn sessility && echo "Waiting for sessility to start..." && sleep 5
 stop:
@@ -82,6 +82,6 @@ print-container-url:
 	echo "http://"`sudo lxc-attach -n sessility -- echo $(CONTAINERADDR)`"/"
 
 test:
-	./test
+	$(CMD) phpunit --verbose --colors --verbose --process-isolation --bootstrap Plugin/tests/bootstrap.php Plugin/tests/*Test.php
 
 .PHONY: test clean

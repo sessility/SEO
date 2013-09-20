@@ -1,2 +1,0 @@
-#!/bin/bash
-phpunit --verbose --colors --verbose --process-isolation --bootstrap Plugin/tests/bootstrap.php Plugin/tests/*Test.php

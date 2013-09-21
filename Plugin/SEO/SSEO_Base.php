@@ -1,5 +1,5 @@
 <?php
-class SSEO_Base
+class Sseo_Base
 {
 
     private $name = 'Sessility SEO';

@@ -1,22 +1,43 @@
 <?php
 class Sseo_Stopwords {
 
-    private $path = '/../../config/stopwords/';
-    private $lang = '';
+    private $path;
+    private $lang;
+
+    private $config;
+    private $lang_config;
+
     private $words;
 
-    public function __construct($lang = 'en') {
+
+    public function __construct($lang = 'en', $path = '/../../config/stopwords/') {
 
         $this->lang = $lang;
+        $this->path = $path;
 
-        $json_file = __DIR__ . $this->path . $lang . '.json';
-        $json = $this->getJSON($json_file);
+        $this->getConfig();
+        $this->getLang();
+    }
 
-        $this->set($this->parseJSON($json)["words"]);
+    private function getConfig() {
+
+        $config_file = __DIR__ . $this->path . 'main.json';
+        $config_json = file_get_contents($config_file);
+        $this->config = $this->parseJSON($config_json);
 
     }
 
-    private function getJSON($file) {
+    private function getLang() {
+
+        $lang_file = __DIR__ . $this->path . $this->lang . '.json';
+        $lang_json = $this->getLangJson($lang_file);
+
+        $this->lang_config = $this->parseJSON($lang_json);
+        $this->set($this->lang_config["words"]);
+
+    }
+
+    private function getLangJson($file) {
 
         try {
             $json = file_get_contents($file);
@@ -48,7 +69,31 @@ class Sseo_Stopwords {
 
     public function is($word) {
 
-        return array_search(strtolower($word), $this->get(), true) !== false;
+        $case = $this->lang_config['case'];
+        $words = $this->get();
+
+        // word is all upperacase, ignore it
+        // lang has to have a concept of case
+        if($this->config["ignore_uppercase"] && $case) {
+
+            if($word === mb_strtoupper($word, $this->config['encoding']) && strlen($word) > 1 ) {
+                return false;
+            }
+
+        }
+
+        if($case) {
+
+            return array_search(mb_strtolower($word, $this->config['encoding']), $this->get(), true) !== false;
+
+
+        } else {
+
+            return array_search($word, $words, true) !== false;
+
+        }
+
+
 
     }
 

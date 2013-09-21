@@ -20,14 +20,6 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
         $this->assertEmpty($o->get());
     }
 
-    public function testBadLanguageStopword() {
-
-        $o = new Sseo_Stopwords('foo');
-
-        $this->assertFalse($o->is('baz'));
-
-    }
-
     /* test spesific langs */
 
     public function testEnglishStopword() {
@@ -213,6 +205,38 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $text = 'The brown fox jumps over the something brown thing';
         $targetText = 'brown fox jumps something brown thing';
+
+        $this->assertEquals($targetText, $o->reduce($text));
+
+    }
+
+
+    public function testRecucedNorwegianText() {
+
+        $o = new Sseo_Stopwords('no');
+
+        $text = 'Hvordan stjele kofferter fra butikker på vestkanten';
+        $targetText = 'stjele kofferter butikker vestkanten';
+
+        $this->assertEquals($targetText, $o->reduce($text));
+
+    }
+
+    public function testCaseSensitivity() {
+
+        $o = new Sseo_Stopwords('en');
+
+        $this->assertTrue($o->is('Is'));
+        $this->assertFalse($o->is('IS'));
+
+    }
+
+    public function testNorwegianCaseSensitivity() {
+
+        $o = new Sseo_Stopwords('no');
+
+        $text = 'Jeg startet et selskap som heter DET. Jeg så ET da jeg var liten.';
+        $targetText = 'startet selskap heter DET. ET liten.';
 
         $this->assertEquals($targetText, $o->reduce($text));
 

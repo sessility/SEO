@@ -1,39 +1,39 @@
 <?php
-class Sseo_Stopwords {
+
+include_once(__DIR__ . '/../sseo.php');
+
+class Sseo_Stopwords extends Sseo_Base {
 
     private $path;
     private $lang;
 
-    private $config;
     private $lang_config;
 
     private $words;
 
 
-    public function __construct($lang = 'en', $path = '/../../config/stopwords/') {
+    function __construct($lang = 'en', $path = '/../../config/stopwords/') {
+
+        parent::__construct();
 
         $this->lang = $lang;
         $this->path = $path;
 
-        $this->getConfig();
-        $this->getLang();
-    }
-
-    private function getConfig() {
-
-        $config_file = __DIR__ . $this->path . 'main.json';
-        $config_json = file_get_contents($config_file);
-        $this->config = $this->parseJSON($config_json);
+        $this->initLangConfig();
 
     }
 
-    private function getLang() {
+    private function initLangConfig() {
 
         $lang_file = __DIR__ . $this->path . $this->lang . '.json';
-        $lang_json = $this->getLangJson($lang_file);
 
-        $this->lang_config = $this->parseJSON($lang_json);
-        $this->set($this->lang_config["words"]);
+        $ok = $this->getConfig()->setJSONFile($lang_file);
+
+        if($ok) {
+            $this->setWords($this->getConfig()->get("words"));
+        } else {
+            $this->setWords(array());
+        }
 
     }
 
@@ -55,28 +55,28 @@ class Sseo_Stopwords {
 
     }
 
-    public function get() {
+    public function getWords() {
 
         return $this->words;
 
     }
 
-    public function set($words) {
+    public function setWords($words) {
 
         $this->words = $words;
 
     }
 
-    public function is($word) {
+    public function isStopword($word) {
 
-        $case = $this->lang_config['case'];
-        $words = $this->get();
+        $case = $this->getConfig()->get('case');
+        $words = $this->getWords();
 
         // word is all upperacase, ignore it
         // lang has to have a concept of case
-        if($this->config["ignore_uppercase"] && $case) {
+        if($this->getConfig()->get('ignore_uppercase') && $case) {
 
-            if($word === mb_strtoupper($word, $this->config['encoding']) && strlen($word) > 1 ) {
+            if($word === mb_strtoupper($word, $this->getConfig()->get('encoding')) && strlen($word) > 1 ) {
                 return false;
             }
 
@@ -84,7 +84,7 @@ class Sseo_Stopwords {
 
         if($case) {
 
-            return array_search(mb_strtolower($word, $this->config['encoding']), $this->get(), true) !== false;
+            return array_search(mb_strtolower($word, $this->getConfig()->get('encoding')), $this->getWords(), true) !== false;
 
 
         } else {
@@ -103,7 +103,7 @@ class Sseo_Stopwords {
         $reduced = array();
 
         foreach($arr as $word) {
-            if(!$this->is($word)) {
+            if(!$this->isStopword($word)) {
                 $reduced[] = $word;
             }
         }

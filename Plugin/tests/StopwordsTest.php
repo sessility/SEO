@@ -17,7 +17,7 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('foo');
 
-        $this->assertEmpty($o->get());
+        $this->assertEmpty($o->getWords());
     }
 
     /* test spesific langs */
@@ -26,11 +26,11 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('en');
 
-        $this->assertTrue($o->is('has'));
-        $this->assertTrue($o->is('HaS'));
+        $this->assertTrue($o->isStopword('has'));
+        $this->assertTrue($o->isStopword('HaS'));
 
-        $this->assertFalse($o->is('brown'));
-        $this->assertFalse($o->is('fox'));
+        $this->assertFalse($o->isStopword('brown'));
+        $this->assertFalse($o->isStopword('fox'));
 
     }
 
@@ -38,8 +38,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('no');
 
-        $this->assertTrue($o->is('på'));
-        $this->assertFalse($o->is('unittest'));
+        $this->assertTrue($o->isStopword('på'));
+        $this->assertFalse($o->isStopword('unittest'));
 
     }
 
@@ -47,8 +47,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('dk');
 
-        $this->assertTrue($o->is('den'));
-        $this->assertFalse($o->is('arbeid'));
+        $this->assertTrue($o->isStopword('den'));
+        $this->assertFalse($o->isStopword('arbeid'));
 
     }
 
@@ -56,8 +56,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('bg');
 
-        $this->assertTrue($o->is('беше'));
-        $this->assertFalse($o->is('език'));
+        $this->assertTrue($o->isStopword('беше'));
+        $this->assertFalse($o->isStopword('език'));
 
     }
 
@@ -65,8 +65,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('de');
 
-        $this->assertTrue($o->is('unter'));
-        $this->assertFalse($o->is('hitler'));
+        $this->assertTrue($o->isStopword('unter'));
+        $this->assertFalse($o->isStopword('hitler'));
 
     }
 
@@ -74,8 +74,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('es');
 
-        $this->assertTrue($o->is('que'));
-        $this->assertFalse($o->is('español'));
+        $this->assertTrue($o->isStopword('que'));
+        $this->assertFalse($o->isStopword('español'));
 
     }
 
@@ -83,8 +83,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('fa');
 
-        $this->assertTrue($o->is('در'));
-        $this->assertFalse($o->is('فارسی'));
+        $this->assertTrue($o->isStopword('در'));
+        $this->assertFalse($o->isStopword('فارسی'));
 
     }
 
@@ -92,8 +92,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('fi');
 
-        $this->assertTrue($o->is('olla'));
-        $this->assertFalse($o->is('perkele'));
+        $this->assertTrue($o->isStopword('olla'));
+        $this->assertFalse($o->isStopword('perkele'));
 
     }
 
@@ -101,8 +101,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('fr');
 
-        $this->assertTrue($o->is('aux'));
-        $this->assertFalse($o->is('viva'));
+        $this->assertTrue($o->isStopword('aux'));
+        $this->assertFalse($o->isStopword('viva'));
 
     }
 
@@ -110,8 +110,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('hi');
 
-        $this->assertTrue($o->is('पर'));
-        $this->assertFalse($o->is('अर्धतत्सम'));
+        $this->assertTrue($o->isStopword('पर'));
+        $this->assertFalse($o->isStopword('अर्धतत्सम'));
 
     }
 
@@ -119,8 +119,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('hu');
 
-        $this->assertTrue($o->is('ahogy'));
-        $this->assertFalse($o->is('magyar'));
+        $this->assertTrue($o->isStopword('ahogy'));
+        $this->assertFalse($o->isStopword('magyar'));
 
     }
 
@@ -128,8 +128,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('it');
 
-        $this->assertTrue($o->is('ad'));
-        $this->assertFalse($o->is('fiat'));
+        $this->assertTrue($o->isStopword('ad'));
+        $this->assertFalse($o->isStopword('fiat'));
 
     }
 
@@ -137,8 +137,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('jp');
 
-        $this->assertTrue($o->is('これ'));
-        $this->assertFalse($o->is('日本語'));
+        $this->assertTrue($o->isStopword('これ'));
+        $this->assertFalse($o->isStopword('日本語'));
 
     }
 
@@ -146,8 +146,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('nl');
 
-        $this->assertTrue($o->is('de'));
-        $this->assertFalse($o->is('meneer'));
+        $this->assertTrue($o->isStopword('de'));
+        $this->assertFalse($o->isStopword('meneer'));
 
     }
 
@@ -155,8 +155,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('pl');
 
-        $this->assertTrue($o->is('ach'));
-        $this->assertFalse($o->is('foo'));
+        $this->assertTrue($o->isStopword('ach'));
+        $this->assertFalse($o->isStopword('foo'));
 
     }
 
@@ -164,8 +164,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('pt');
 
-        $this->assertTrue($o->is('que'));
-        $this->assertFalse($o->is('zoo'));
+        $this->assertTrue($o->isStopword('que'));
+        $this->assertFalse($o->isStopword('zoo'));
 
     }
 
@@ -173,8 +173,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('ru');
 
-        $this->assertTrue($o->is('и'));
-        $this->assertFalse($o->is('vodka'));
+        $this->assertTrue($o->isStopword('и'));
+        $this->assertFalse($o->isStopword('vodka'));
 
     }
 
@@ -182,8 +182,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('se');
 
-        $this->assertTrue($o->is('och'));
-        $this->assertFalse($o->is('demokratarna'));
+        $this->assertTrue($o->isStopword('och'));
+        $this->assertFalse($o->isStopword('demokratarna'));
 
     }
 
@@ -191,8 +191,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('ar');
 
-        $this->assertTrue($o->is('ب'));
-        $this->assertFalse($o->is('العربية'));
+        $this->assertTrue($o->isStopword('ب'));
+        $this->assertFalse($o->isStopword('العربية'));
 
     }
 
@@ -226,8 +226,8 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
 
         $o = new Sseo_Stopwords('en');
 
-        $this->assertTrue($o->is('Is'));
-        $this->assertFalse($o->is('IS'));
+        $this->assertTrue($o->isStopword('Is'));
+        $this->assertFalse($o->isStopword('IS'));
 
     }
 

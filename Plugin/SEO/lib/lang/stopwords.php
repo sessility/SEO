@@ -12,7 +12,7 @@ class Sseo_Stopwords {
         $json_file = __DIR__ . $this->path . $lang . '.json';
         $json = $this->getJSON($json_file);
 
-        $this->set($this->parseWords($json)["words"]);
+        $this->set($this->parseJSON($json)["words"]);
 
     }
 
@@ -28,7 +28,7 @@ class Sseo_Stopwords {
 
     }
 
-    private function parseWords($json) {
+    private function parseJSON($json) {
 
         return json_decode($json, TRUE);
 

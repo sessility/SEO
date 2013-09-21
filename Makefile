@@ -39,6 +39,7 @@ remove-wpconfig:
 
 wordpress: remove-wpconfig
 
+	-$(CMD) sudo gunzip /usr/share/doc/wordpress/examples/setup-mysql.gz
 	-$(CMD) sudo bash /usr/share/doc/wordpress/examples/setup-mysql -n wordpress $(CONTAINERADDR)
 
 	# create vhost config

@@ -46,20 +46,26 @@ class Sseo_Stopwords {
 
     }
 
-    public function isStopWord($word) {
+    public function is($word) {
 
-        return array_search($word, $this->get()) !== false;
+        return array_search(strtolower($word), $this->get(), true) !== false;
 
     }
 
+    public function reduce($text) {
 
-    // foreach ($jsonIterator as $key => $val) {
-    //     if(is_array($val)) {
-    //         echo "$key:\n";
-    //     } else {
-    //         echo "$key => $val\n";
-    //     }
-    // }
+        $arr = explode(' ', $text);
+        $reduced = array();
+
+        foreach($arr as $word) {
+            if(!$this->is($word)) {
+                $reduced[] = $word;
+            }
+        }
+
+        return implode(' ', $reduced);
+
+    }
 
 }
 ?>

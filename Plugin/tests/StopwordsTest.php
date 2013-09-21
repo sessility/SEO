@@ -19,20 +19,43 @@ class StopwordsTest extends PHPUnit_Framework_TestCase {
         $this->assertEmpty($o->get());
     }
 
-    public function testBadLanguageStopWord() {
+    public function testBadLanguageStopword() {
 
         $o = new Sseo_Stopwords('foo');
 
-        $this->assertFalse($o->isStopWord('baz'));
+        $this->assertFalse($o->is('baz'));
 
     }
 
-    public function testEnglishLanguageStopWord() {
+    public function testEnglishStopword() {
 
         $o = new Sseo_Stopwords('en');
 
-        $this->assertTrue($o->isStopWord('is'));
-        $this->assertFalse($o->isStopWord('unittest'));
+        $this->assertTrue($o->is('has'));
+        $this->assertTrue($o->is('HaS'));
+
+        $this->assertFalse($o->is('brown'));
+        $this->assertFalse($o->is('fox'));
+
+    }
+
+    public function testNorwegianStopword() {
+
+        $o = new Sseo_Stopwords('no');
+
+        $this->assertTrue($o->is('er'));
+        $this->assertFalse($o->is('unittest'));
+
+    }
+
+    public function testReduceEnglishText() {
+
+        $o = new Sseo_Stopwords('en');
+
+        $text = 'The brown fox jumps over the something brown thing';
+        $targetText = 'brown fox jumps something brown thing';
+
+        $this->assertEquals($targetText, $o->reduce($text));
 
     }
 

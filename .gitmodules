@@ -1,0 +1,3 @@
+[submodule "Plugin/SEO/lib/php-webmaster-tools-downloads"]
+	path = Plugin/SEO/lib/php-webmaster-tools-downloads
+	url = git@github.com:eyecatchup/php-webmaster-tools-downloads.git

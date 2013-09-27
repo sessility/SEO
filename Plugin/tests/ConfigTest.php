@@ -63,17 +63,6 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
 
     }
 
-    // public function testJSON() {
-
-    //     $o = new Sseo_Config();
-
-    //     $json = '{ "foo": true, "bar": 1 }';
-
-    //     $o->addJSON($json);
-
-    //     $this->assertTrue($o->get('foo'));
-
-    // }
 }
 
 ?>
